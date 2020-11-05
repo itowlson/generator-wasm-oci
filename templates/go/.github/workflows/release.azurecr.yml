@@ -37,7 +37,7 @@ jobs:
       uses: actions/upload-artifact@v1
       with:
         name: <%= moduleName %>.wasm
-        path: to/be/announced/<%= moduleName %>.wasm
+        path: target/wasm32-wasi/release/<%= moduleName %>.wasm
 
   publish:
     name: Push released module to OCI registry

@@ -6,8 +6,9 @@ import { Registry } from './providers/registry';
 import { acr } from './providers/acr';
 import { defaultRegistry } from './providers/default';
 
-import { rust } from './languages/rust';
 import { Language } from './languages/language';
+import { rust } from './languages/rust';
+import { golang } from './languages/go';
 
 module.exports = class extends Generator {
   private answers: any = undefined;
@@ -41,7 +42,8 @@ module.exports = class extends Generator {
         name: 'language',
         message: 'What programming language will you write the module in?',
         choices: [
-          'Rust'
+          'Rust',
+          'Go'
         ],
         default: 'Rust'
       },
@@ -76,6 +78,12 @@ module.exports = class extends Generator {
         this.answers
       );
     }
+
+    this.fs.copyTpl(
+      this.templatePath(fspath.join(templateFolder, `.github/workflows/build.yml`)),
+      this.destinationPath(".github/workflows/build.yml"),
+      this.answers
+    );
 
     const releaseTemplate = providerReleaseTemplate(this.answers.registryProvider);
     this.fs.copyTpl(
@@ -115,6 +123,8 @@ function languageProvider(language: string): Language {
   switch (language) {
     case 'Rust':
       return rust;
+    case 'Go':
+      return golang;
     default:
       throw new Error("You didn't choose a language");
   }
